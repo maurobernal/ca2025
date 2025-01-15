@@ -13,13 +13,6 @@ public class Peoples : EndpointGroupBase
         app.MapGroup(this)
             .MapGet(GetPeople,"{id}")
             .MapPost(CreatePeople);
-        //.MapGet(GetPeoples);
-        // .RequireAuthorization();
-        // .MapGet(GetPeoplesWithPagination)
-        // .MapPost(CreatePeople)
-        // .MapPut(UpdatePeople, "{id}")
-        // .MapPut(UpdatePeopleDetail, "UpdateDetail/{id}")
-        // .MapDelete(DeletePeople, "{id}");
     }
 
     public Ok<GetPeopleDto> GetPeople(ISender sender,int id)
