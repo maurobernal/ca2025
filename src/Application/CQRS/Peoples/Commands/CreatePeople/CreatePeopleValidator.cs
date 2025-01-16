@@ -15,7 +15,7 @@ public class CreatePeopleValidator : AbstractValidator<CreatePeopleCommand>
             .GreaterThan(0).WithMessage("CountryId must major 0");
 
 
-        RuleFor(x => x.Hobbies)
+        RuleFor(x => x.listHobbies)
     .NotEmpty().WithMessage("Hobbies empty");
 
     }

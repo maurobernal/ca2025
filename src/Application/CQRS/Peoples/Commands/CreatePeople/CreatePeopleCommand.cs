@@ -8,7 +8,7 @@ public class CreatePeopleCommand : IRequest<int>
     public DateOnly BirthDate { get; set; }
     public int CountryId { get; set; }
     public bool Child { get; set; }
-    public List<int> Hobbies { get; set; } = new();
+    public List<int> listHobbies { get; set; } = new();
 
     public class Mapping : Profile
     {
@@ -29,20 +29,25 @@ public class CreatePeopleCommand : IRequest<int>
         
         // option1 - sintax method
         var listHobbiesBD = await context.Hobbies
-            .Where (w => request.Hobbies.Contains(w.Id))
+            .Where (w => request.listHobbies.Contains(w.Id))
             .OrderBy(h=>h.Name)
-            .Select(s => s.Id)
+            .Select(s => s)
             .ToListAsync();
 
-        if(listHobbiesBD.Count!= request.Hobbies.Count)
+        if(listHobbiesBD.Count!= request.listHobbies.Count)
         {
-            var falt= request.Hobbies.Except(listHobbiesBD).ToList();
+            var falt= request.listHobbies
+                .Except(listHobbiesBD.Select(s =>s.Id)).ToList();
             throw new NotFoundException(falt[0].ToString(), "Hobbie not found");
         }
 
         var entity = mapper.Map<People>(request);
+        entity.Hobbies = listHobbiesBD;
+
         context.Peoples.Add(entity);
         await context.SaveChangesAsync(cancellationToken);
+
+        
 
         return entity.Id;
     }

@@ -2,9 +2,11 @@
 using ca.Application.CQRS.Peoples.Commands.CreatePeople;
 using ca.Application.CQRS.Peoples.Commands.DeletePeople;
 using ca.Application.CQRS.Peoples.Commands.UpdatePeople;
+using ca.Application.CQRS.Peoples.Queries.GetListPeople;
 using ca.Application.CQRS.Peoples.Queries.GetPeople;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ca.Web.Endpoints;
 
@@ -14,6 +16,7 @@ public class Peoples : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapGet(GetPeople,"{id}")
+            .MapGet(GetPeoples)
             .MapPost(CreatePeople)
             .MapPut(UpdatePeople, "{id}")
             .MapDelete(DeletePeople, "{id}")
@@ -29,10 +32,11 @@ public class Peoples : EndpointGroupBase
         return TypedResults.Ok(res);
     }
 
-    public static Ok<string> GetPeoples(ISender sender)
+    public static async Task<Ok<List<GetListPeopleDto>>> GetPeoples(ISender sender, [AsParameters] GetListPeopleQuery query)
     {
-       
-        return TypedResults.Ok("GetPeoples");
+        var res = await sender.Send(query);
+
+        return TypedResults.Ok(res);
     }
 
     public static async Task<Ok<int>> CreatePeople(ISender sender, CreatePeopleCommand command)
