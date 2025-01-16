@@ -8,12 +8,19 @@ public class CreatePeopleValidator : AbstractValidator<CreatePeopleCommand>
                 .MaximumLength(40).WithMessage("Name lenght is incorrect");
 
         RuleFor(x => x.BirthDate).NotEmpty().WithMessage("BirthDate empty")
-            //.Must( d => d.Year>=2020);
             .Must(Valid);
+
+        RuleFor(x => x.CountryId)
+            .NotEmpty().WithMessage("CountryId empty")
+            .GreaterThan(0).WithMessage("CountryId must major 0");
+
+
+        RuleFor(x => x.Hobbies)
+    .NotEmpty().WithMessage("Hobbies empty");
 
     }
 
-    private bool Valid(DateOnly birthDate)
+    private static bool Valid(DateOnly birthDate)
     {
         var now = DateTime.Now;
         int age = now.Year - birthDate.Year;

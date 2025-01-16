@@ -10,5 +10,8 @@ public interface IApplicationDbContext
 
     DbSet<People> Peoples { get; }
 
+    DbSet<Country> Countrys { get; }
+
+    DbSet<Hobbie> Hobbies { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

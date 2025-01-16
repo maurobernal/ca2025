@@ -17,9 +17,4 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CQRS\Peoples\Commands\DeletePeople\" />
-    <Folder Include="CQRS\Peoples\Commands\UpdatePeople\" />
-  </ItemGroup>
-
 </Project>

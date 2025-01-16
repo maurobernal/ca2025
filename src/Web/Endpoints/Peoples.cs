@@ -1,5 +1,7 @@
 ﻿
 using ca.Application.CQRS.Peoples.Commands.CreatePeople;
+using ca.Application.CQRS.Peoples.Commands.DeletePeople;
+using ca.Application.CQRS.Peoples.Commands.UpdatePeople;
 using ca.Application.CQRS.Peoples.Queries.GetPeople;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +14,13 @@ public class Peoples : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapGet(GetPeople,"{id}")
-            .MapPost(CreatePeople);
+            .MapPost(CreatePeople)
+            .MapPut(UpdatePeople, "{id}")
+            .MapDelete(DeletePeople, "{id}")
+            ;
     }
 
-    public Ok<GetPeopleDto> GetPeople(ISender sender,int id)
+    public static Ok<GetPeopleDto> GetPeople(ISender sender,int id)
     {
         GetPeopleQuery query = new();
         query.asignId(id);
@@ -24,20 +29,33 @@ public class Peoples : EndpointGroupBase
         return TypedResults.Ok(res);
     }
 
-    public Ok<string> GetPeoples(ISender sender)
+    public static Ok<string> GetPeoples(ISender sender)
     {
        
         return TypedResults.Ok("GetPeoples");
     }
 
-    public async Task<Ok<int>> CreatePeople(ISender sender, CreatePeopleCommand command)
+    public static async Task<Ok<int>> CreatePeople(ISender sender, CreatePeopleCommand command)
     {
         var res = await sender.Send(command);
 
         return TypedResults.Ok(res);
     }
 
+    public static async Task<IResult> UpdatePeople(ISender sender, UpdatePeopleCommand command, [FromQuery ]int Id)
+    {
+        if(Id != command.Id) return TypedResults.BadRequest("Id in body and query string must be the same");
+        var res = await sender.Send(command);
+        return TypedResults.Ok(res);
+    }
 
+    public static async Task<Ok<int>> DeletePeople(ISender sender, [FromQuery] int Id)
+    {
+        DeletePeopleCommand command = new();
+        command.Id = Id;
+        var res = await sender.Send(command);
+        return TypedResults.Ok(res);
+    }
 
 
 

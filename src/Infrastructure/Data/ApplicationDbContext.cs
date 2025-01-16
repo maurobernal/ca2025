@@ -17,6 +17,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<People> Peoples => Set<People>();
 
+    public DbSet<Country> Countrys => Set<Country>();
+
+    public DbSet<Hobbie> Hobbies => Set<Hobbie>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

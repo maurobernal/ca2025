@@ -15,7 +15,8 @@ public class GetPeopleQueryHandler(IApplicationDbContext context, IMapper mapper
     public async Task<GetPeopleDto> Handle(GetPeopleQuery request, CancellationToken cancellationToken)
     {
         var res = await context.Peoples
-            .Where(x => x.Id == request.Id).ProjectTo<GetPeopleDto>(mapper.ConfigurationProvider)
+            .Where(x => x.Id == request.Id)
+            .ProjectTo<GetPeopleDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 
         if (res == null) throw new NotFoundException(request.Id.ToString(),"Peoples");
