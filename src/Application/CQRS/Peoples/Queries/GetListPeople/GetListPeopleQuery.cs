@@ -12,6 +12,7 @@ public class GetListPeopleQueryHandler(IApplicationDbContext context, IMapper ma
     public async Task<List<GetListPeopleDto>> Handle(GetListPeopleQuery request, CancellationToken cancellationToken)
     {
         int.TryParse(request.Count.ToString(), out int count);
+        if (request.Count == null) count = 10;
 
         request.Name ??= string.Empty;
         var res = await 

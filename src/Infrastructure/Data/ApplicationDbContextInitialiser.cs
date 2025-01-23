@@ -69,7 +69,7 @@ public class ApplicationDbContextInitialiser
         // Default roles
         var administratorRole = new IdentityRole(Roles.Administrator);
 
-        if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
+        if (await _roleManager.Roles.AllAsync(r => r.Name != administratorRole.Name))
         {
             await _roleManager.CreateAsync(administratorRole);
         }
@@ -77,7 +77,7 @@ public class ApplicationDbContextInitialiser
         // Default users
         var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
 
-        if (_userManager.Users.All(u => u.UserName != administrator.UserName))
+        if (await _userManager.Users.AllAsync(u => u.UserName != administrator.UserName))
         {
             await _userManager.CreateAsync(administrator, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
@@ -88,7 +88,7 @@ public class ApplicationDbContextInitialiser
 
         // Default data
         // Seed, if necessary
-        if (!_context.TodoLists.Any())
+        if (!await _context.TodoLists.AnyAsync())
         {
             _context.TodoLists.Add(new TodoList
             {
@@ -104,5 +104,32 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+        if(!await _context.Countrys.AnyAsync())
+        {
+            _context.Countrys.Add(new Country { Id = 1, Name = "United States", Created=DateTime.UtcNow, Modified = DateTime.UtcNow });
+            _context.Countrys.Add(new Country { Id = 2, Name = "Argentina", Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            await _context.SaveChangesAsync();
+        }
+
+        if (!await _context.Hobbies.AnyAsync())
+        {
+            _context.Hobbies.Add(new Hobbie { Id = 1, Name = "Futbol", Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            _context.Hobbies.Add(new Hobbie { Id = 2, Name = "Programacion", Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            await _context.SaveChangesAsync();
+        }
+
+        if (!await _context.Peoples.AnyAsync())
+        {
+            var hobbie = await _context.Hobbies.FirstOrDefaultAsync();
+            var listHobbie = new List<Hobbie>();    
+           listHobbie.Add(hobbie!);
+
+            _context.Peoples.Add(new People { Id = 1, Name = "Juan", CountryId=1, Hobbies = listHobbie, Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            _context.Peoples.Add(new People { Id = 2, Name = "Diego", CountryId = 1, Hobbies = listHobbie, Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            _context.Peoples.Add(new People { Id = 3, Name = "Ana", CountryId = 2, Hobbies = listHobbie, Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            _context.Peoples.Add(new People { Id = 4, Name = "Laura", CountryId = 2, Hobbies = listHobbie, Created = DateTime.UtcNow, Modified = DateTime.UtcNow });
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
